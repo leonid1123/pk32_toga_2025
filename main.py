@@ -58,16 +58,17 @@ class Application(toga.App):
         self.cursor.execute(create_table_query)
         self.cnx.commit()
 
-        self.cursor.execute("SELECT password FROM users WHERE login=?", (user_login,))
+        self.cursor.execute("SELECT password, id FROM users WHERE login=?", (user_login,))
         self.cnx.commit()
         ans = self.cursor.fetchall()
         print(ans)
         if ans:
             tmp = ans[0]
             pass_tmp = tmp[0]
-            print(pass_tmp)
             if pass_tmp == user_password:
                 print("ok")
+                self.user_id=tmp[1]
+                print(self.user_id)
                 self.notes_window()
             else:
                 print("не ok")
@@ -105,15 +106,13 @@ class Application(toga.App):
         self.note_win.content = note_box
         self.note_win.show()
 
-    def ok_note_button(self):
+    def ok_note_button(self, widget):
         txt = self.note_view.value
         sql = ""
-        params = (self.id_user,txt) #нужно получит ID пользователя
+        params = (self.id_user.txt) #нужно получит ID пользователя
         self.cursor.execute(sql,params)
         self.cnx.commit()
         self.note_win.close()
-
-
 
 
 app = Application("myApp", "myApp")

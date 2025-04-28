@@ -95,15 +95,24 @@ class Application(toga.App):
     def note(self, widget):
         #сделать проверку на открытие окна
         #сделать таблицу с заметками
-        note_win = toga.Window(title="Заметка")
+        self.note_win = toga.Window(title="Заметка")
         note_box = toga.Box()
         note_box.style.update(direction=COLUMN)
-        note_view = toga.MultilineTextInput(style=self.style)
-        note_btn = toga.Button("OK", style=self.style, on_press=note_win.close)
-        note_box.add(note_view)
+        self.note_view = toga.MultilineTextInput(style=self.style)
+        note_btn = toga.Button("OK", style=self.style, on_press=self.ok_note_button)
+        note_box.add(self.note_view)
         note_box.add(note_btn)
-        note_win.content = note_box
-        note_win.show()
+        self.note_win.content = note_box
+        self.note_win.show()
+
+    def ok_note_button(self):
+        txt = self.note_view.value
+        sql = ""
+        params = (self.id_user,txt) #нужно получит ID пользователя
+        self.cursor.execute(sql,params)
+        self.cnx.commit()
+        self.note_win.close()
+
 
 
 
